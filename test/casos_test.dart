@@ -1,10 +1,12 @@
 import 'dart:math';
 
-import 'package:ecotrack_patrones/casos/aviso_semanal.dart';
-import 'package:ecotrack_patrones/casos/lab_guardar.dart';
-import 'package:ecotrack_patrones/casos/medidor_texto.dart';
-import 'package:ecotrack_patrones/casos/registro_paneles.dart';
-import 'package:ecotrack_patrones/casos/tope_lectura.dart';
+import 'package:ecotrack_patrones/casos/adapter.dart';
+import 'package:ecotrack_patrones/casos/dependency_injection.dart';
+import 'package:ecotrack_patrones/casos/factory.dart';
+import 'package:ecotrack_patrones/casos/observer.dart';
+import 'package:ecotrack_patrones/casos/repository.dart';
+import 'package:ecotrack_patrones/casos/strategy.dart';
+import 'package:ecotrack_patrones/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -46,5 +48,31 @@ void main() {
     await tester.pump();
 
     expect(find.textContaining('Error'), findsOneWidget);
+  });
+
+  testWidgets('cada patrón del menú abre su pantalla', (tester) async {
+    await tester.pumpWidget(
+      EcoTrackApp(
+        almacen: ConsumoEnMemoria(),
+        lector: LectorMedidor(MedidorLegado(azar: Random(1))),
+      ),
+    );
+
+    const destinos = {
+      'Repository': 'Consumo',
+      'Adapter': 'Medidor',
+      'Factory': 'Aviso',
+      'Strategy': 'Tope',
+      'Observer': 'Paneles',
+      'Inyección de dependencias': 'Laboratorio',
+    };
+    for (final MapEntry(key: patron, value: pantalla) in destinos.entries) {
+      await tester.tap(find.text(patron));
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(AppBar, pantalla), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+    }
   });
 }

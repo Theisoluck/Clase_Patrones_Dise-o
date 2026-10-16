@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'casos/aviso_semanal.dart';
-import 'casos/consumo_memoria.dart';
-import 'casos/lab_guardar.dart';
-import 'casos/medidor_texto.dart';
-import 'casos/registro_paneles.dart';
-import 'casos/tope_lectura.dart';
+import 'casos/adapter.dart';
+import 'casos/dependency_injection.dart';
+import 'casos/factory.dart';
+import 'casos/observer.dart';
+import 'casos/repository.dart';
+import 'casos/strategy.dart';
 
 void main() {
   final almacen = ConsumoEnMemoria();
@@ -25,39 +25,37 @@ class EcoTrackApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO actividad: identifica el patrón de cada caso, renombra los
-    // archivos en lib/casos/ y deja este menú con el nombre del patrón
-    // y la redirección correcta a cada pantalla.
+    // Cada caso: patrón, problema que resuelve y pantalla que lo muestra.
     final casos = <(String, String, Widget)>[
       (
-        'Caso A',
-        'Centralizar la construcción de un objeto según el caso.',
-        const PantallaAviso(),
-      ),
-      (
-        'Caso B',
-        'Entregar desde fuera el objeto del que se depende.',
-        const PantallaLab(),
-      ),
-      (
-        'Caso C',
-        'Traducir un formato ajeno al de la app.',
-        PantallaMedidor(lector: lector),
-      ),
-      (
-        'Caso D',
+        'Repository',
         'Ocultar de dónde salen los datos.',
         PantallaConsumo(almacen: almacen),
       ),
       (
-        'Caso E',
+        'Adapter',
+        'Traducir un formato ajeno al de la app.',
+        PantallaMedidor(lector: lector),
+      ),
+      (
+        'Factory',
+        'Centralizar la construcción de un objeto según el caso.',
+        const PantallaAviso(),
+      ),
+      (
+        'Strategy',
+        'Intercambiar una regla sin copiar if.',
+        const PantallaTope(),
+      ),
+      (
+        'Observer',
         'Avisar a varios interesados sin nombrarlos.',
         const PantallaPaneles(),
       ),
       (
-        'Caso F',
-        'Intercambiar una regla sin copiar if.',
-        const PantallaTope(),
+        'Inyección de dependencias',
+        'Entregar desde fuera el objeto del que se depende.',
+        const PantallaLab(),
       ),
     ];
 
